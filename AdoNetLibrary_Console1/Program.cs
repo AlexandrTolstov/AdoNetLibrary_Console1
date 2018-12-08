@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
-using System.Data.Common;
+using System.Data;
 
 namespace AdoNetLibrary_Console1
 {
@@ -40,17 +40,30 @@ namespace AdoNetLibrary_Console1
             //param1.ParameterName = "@p1";
             //param1.SqlDbType = System.Data.SqlDbType.NVarChar;
 
-            cmd.Parameters.Add("@p1", System.Data.SqlDbType.NVarChar).Value = firstName;
+            cmd.Parameters.Add("@p1", SqlDbType.NVarChar).Value = firstName;
             cmd.Connection = conn;
             cmd.CommandText = @"select * from Authors Where FirstName = @p1";
 
             SqlDataReader rdr = null;
-
-            rdr = cmd.ExecuteReader();
-
-            while (rdr.Read())
+            try
             {
-                Console.WriteLine(rdr[1] + "\t" + rdr[2]);
+                rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    Console.WriteLine(rdr[1] + "\t" + rdr[2]);
+                }
+            }
+            finally
+            {
+                if (rdr != null)
+                {
+                    rdr.Close();
+                }
+                if (conn != null)
+                {
+                    conn.Close();
+                }
             }
         }
         public void InsertQuery()
@@ -160,7 +173,14 @@ namespace AdoNetLibrary_Console1
             }
             finally
             {
-                
+                if (rdr != null)
+                {
+                    rdr.Close();
+                }
+                if (conn != null)
+                {
+                    conn.Close();
+                }
             }
         }
     }
