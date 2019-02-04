@@ -26,7 +26,8 @@ namespace AdoNetLibrary_Console1
             //pr.InsertQuery();
             //pr.ReadData();
             //pr.ReadData2();
-            pr.ReadQueryOne();
+            //pr.ReadQueryOne();
+            pr.ExecStoredProcedure();
         }
         public void ReadQueryOne()
         {
@@ -182,6 +183,19 @@ namespace AdoNetLibrary_Console1
                     conn.Close();
                 }
             }
+        }
+        public void ExecStoredProcedure()
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("getBooksNumber", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("AuthorId", System.Data.SqlDbType.Int).Value = 1;
+            SqlParameter outputParam = new SqlParameter("@BookCount", System.Data.SqlDbType.Int);
+            outputParam.Direction = ParameterDirection.Output;
+            cmd.Parameters.Add(outputParam);
+
+            cmd.ExecuteNonQuery();
+            Console.WriteLine(cmd.Parameters["@BookCount"].Value.ToString());
         }
     }
 }
